@@ -42,12 +42,14 @@ directory.
 | `SKILL.md` | Entry point and summary of the traps |
 | `references/pinout.md` | Verified GPIO map — display, audio, I²C, SD, battery |
 | `references/traps.md` | The four traps in full, with symptoms and fixes |
+| `references/display.md` | Partial refresh, ghosting, text fitting, GxEPD2 setup |
 | `references/audio.md` | ES8311 bring-up and the DMA drain problem |
 | `references/peripherals.md` | SHTC3, RTC, battery, buttons, GxEPD2, text rendering |
 
 ### The four traps, in one line each
 
-1. **Flash is 8 MB, not 16.** Configuring 16 MB gives a boot loop.
+1. **Two hardware revisions, neither matching the listing.** V1 is 4 MB/2 MB,
+   V2 is 8 MB/8 MB; listings often say 16 MB. Wrong size = boot loop.
 2. **`EPD_PWR` (GPIO6) is active LOW.** HIGH silently powers the panel off.
 3. **GPIO18 is the PWR button, not the battery enable.** That's GPIO17.
 4. **`i2s_write()` returns on enqueue, not playback.** Short sounds vanish.
@@ -66,11 +68,13 @@ A web search returns a third, incorrect map. The only reliable source is
 
 ## Buy the board
 
-Argentina — MercadoLibre: <https://meli.la/2aUTSFb>
+- Waveshare, official: <https://www.waveshare.com/esp32-s3-epaper-1.54.htm?sku=32298>
+- Argentina, MercadoLibre: <https://meli.la/2aUTSFb>
 
-Also sold directly by Waveshare and the usual distributors. Make sure you get
-the black-and-white `ESP32-S3-ePaper-1.54`, not the 4-colour `1.54G`: the pin
-maps differ and this skill documents the B/W board.
+Two things to check before buying. Make sure it is the black-and-white
+`ESP32-S3-ePaper-1.54` and **not** the 4-colour `1.54G` — the pin maps differ
+and this skill documents the B/W board. And note the **two hardware
+revisions**: V1 with 4 MB flash / 2 MB PSRAM, V2 with 8 MB / 8 MB.
 
 ## Contributing
 

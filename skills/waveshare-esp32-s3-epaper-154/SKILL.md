@@ -28,9 +28,10 @@ The only reliable source is `user_config.h` in the vendor's own repository:
 
 Full detail in `references/traps.md`. In short:
 
-1. **Flash is 8 MB, not 16.** Configuring 16 MB gives a boot loop with
-   `Detected size(8192k) smaller than the size in the binary image header`.
-   Always confirm with `esptool.py flash_id` instead of trusting the datasheet.
+1. **Two hardware revisions exist under one name.** V1 has 4 MB flash / 2 MB
+   PSRAM; V2 has 8 MB / 8 MB. Listings often claim 16 MB, which is neither.
+   Configuring the wrong size gives a boot loop. Always ask the chip with
+   `esptool.py flash_id` instead of trusting any datasheet or listing.
 
 2. **`EPD_PWR` (GPIO6) is active LOW.** Driving it HIGH cuts power to the
    panel. SPI then writes into a dead bus, GxEPD2 still reports refresh times,
@@ -43,6 +44,30 @@ Full detail in `references/traps.md`. In short:
 4. **`i2s_write()` returns on enqueue, not on playback.** Switching off the
    speaker amplifier right after writing cuts short sounds entirely. Drain the
    DMA queue first — see `references/audio.md`.
+
+## Always use partial refresh where you can
+
+A full refresh takes ~1.4 s and flashes the whole panel black. A partial
+refresh over just the changed region takes ~0.3 s and does not flash. On
+anything interactive — a menu, a selection, a ticking clock — using full
+refreshes everywhere is the difference between a device that feels broken and
+one that feels good.
+
+The catch is ghosting: partial refreshes leave residue that accumulates, so
+interleave a full refresh every ~20 partials to clear the panel. Details and
+patterns in `references/display.md`.
+
+## Always use partial refresh where you can
+
+A full refresh takes ~1.4 s and flashes the whole panel black. A partial
+refresh over just the changed region takes ~0.3 s and does not flash. On
+anything interactive — a menu, a selection, a ticking clock — using full
+refreshes everywhere is the difference between a device that feels broken and
+one that feels good.
+
+The catch is ghosting: partial refreshes leave residue that accumulates, so
+interleave a full refresh every ~20 partials to clear the panel. Patterns and
+the exact trade-off are in `references/display.md`.
 
 ## Diagnosing a dead screen
 
@@ -61,5 +86,7 @@ first.
 |---|---|
 | `references/pinout.md` | Verified GPIO map for display, audio, I²C, SD, battery |
 | `references/traps.md` | The four traps in full, with symptoms and fixes |
+| `references/display.md` | Partial refresh, ghosting, text fitting, GxEPD2 setup |
+| `references/display.md` | Partial refresh, ghosting, text fitting, GxEPD2 setup |
 | `references/audio.md` | ES8311 bring-up, the DMA drain problem, tone generation |
 | `references/peripherals.md` | SHTC3, PCF85063 RTC, battery ADC, buttons |

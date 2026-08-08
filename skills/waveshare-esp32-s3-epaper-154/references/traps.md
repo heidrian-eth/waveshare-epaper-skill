@@ -5,7 +5,7 @@ listed in the order you are likely to hit them.
 
 ---
 
-## 1. The flash is 8 MB, not 16
+## 1. The flash size is not what the listing says
 
 **Symptom.** Continuous boot loop right after flashing:
 
@@ -16,8 +16,10 @@ assert failed: do_core_init startup.c:328 (flash_ret == ESP_OK)
 Rebooting...
 ```
 
-**Cause.** Product pages and some documentation suggest 16 MB. The silicon
-reports 8 MB embedded flash.
+**Cause.** **Two hardware revisions ship under the same product name:** V1 with
+4 MB flash and 2 MB PSRAM, V2 with 8 MB and 8 MB. Retail listings frequently
+claim 16 MB, which matches neither. Whatever the page says, the silicon is the
+authority.
 
 **Fix.** Set the flash size to 8 MB and use an 8 MB partition table. In
 PlatformIO:
@@ -27,7 +29,8 @@ board_upload.flash_size = 8MB
 board_build.partitions = default_8MB.csv
 ```
 
-**Rule.** Never take flash size from documentation. Ask the chip:
+**Rule.** Never take flash or PSRAM size from documentation or a listing.
+Ask the chip:
 
 ```
 esptool.py --chip esp32s3 flash_id
