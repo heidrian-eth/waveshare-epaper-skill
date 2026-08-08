@@ -47,22 +47,47 @@ Not covered here, but worth using: it keeps time across deep sleep and without
 Wi-Fi, and can wake the board. Relying on NTP alone means the board has no idea
 what time it is until it joins a network.
 
-## PSRAM — unresolved
+## PSRAM — unresolved, but well characterised
 
-On a V2 board, `esptool.py flash_id` reports `Embedded PSRAM 8MB (AP_3v3)`, yet
-Arduino-ESP32 2.x logs at every boot:
+On a V2 board, every boot logs:
 
 ```
 E (197) psram: PSRAM ID read error: 0x00ffffff, PSRAM chip not found or not
 supported, or wrong PSRAM line mode
 ```
 
-Both `psram_type = opi` (matching the vendor's own `CONFIG_SPIRAM_MODE_OCT=y`)
-and `psram_type = qio` produce the same error. The `AP_3v3` marking suggests
-quad rather than octal — the S3's octal parts run at 1.8 V — but changing the
-mode alone does not fix it.
+`0x00ffffff` is all-ones: nothing answers on the bus. At runtime,
+`psramFound()` returns false and `ESP.getPsramSize()` is 0.
 
-Documented as **open**, not solved. Harmless if you do not need the extra RAM.
-It does bite if you do: without PSRAM, audio recording is limited to a few
-seconds of internal RAM instead of minutes. If you resolve it, a pull request
-would help the next person.
+**The PSRAM is definitely present.** From `espefuse.py summary`:
+
+```
+PSRAM_CAP    = 8M
+PSRAM_VENDOR = AP_3v3        (AP Memory, 3.3 V — so quad, not octal:
+                              the S3's octal parts run at 1.8 V)
+FLASH_TYPE   = 4 data lines
+```
+
+Ruled out, so you do not have to repeat any of it:
+
+| Hypothesis | Result |
+|---|---|
+| Faulty unit | No — two boards fail identically |
+| `board_build.psram_type = opi` | No effect |
+| `board_build.psram_type = qio` | No effect |
+| `board_build.arduino.memory_type = qio_qspi` | No effect |
+| GPIO45 strapping (it selects VDD_SPI voltage **and** is the I²S data-out pin, so it looked like a strong lead) | No — fails identically on a cold power-on, before any firmware touches it |
+| eFuses forcing VDD_SPI or remapping SPI pads | All at defaults |
+
+The remaining hypothesis is that Arduino-ESP32 2.x's precompiled libraries do
+not support this package's PSRAM configuration. Confirming it means building a
+minimal ESP-IDF example, where quad mode and voltage can be set explicitly
+rather than picking between two prebuilt variants.
+
+**Whether it is worth chasing depends on what you need PSRAM for.** The usual
+motivation is buffering audio: without it, recording is limited to a few
+seconds of internal RAM. If your board has a microSD slot — this one does —
+streaming audio to and from a file removes the need entirely, at far less cost
+than migrating a working Arduino project to ESP-IDF.
+
+If you do resolve it, a pull request would help the next person.
