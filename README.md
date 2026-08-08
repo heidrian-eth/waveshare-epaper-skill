@@ -5,9 +5,12 @@ board: a 1.54" 200×200 black-and-white e-paper display with an ESP32-S3,
 speaker, microphone, microSD, RTC, temperature/humidity sensor and lithium
 battery management.
 
-Skills follow the [Agent Skills](https://agentskills.io/) format.
+Skills follow the [Agent Skills](https://agentskills.io/) format and this repo
+is listed on [skills.sh](https://skills.sh/jonymusky/waveshare-epaper-skill).
 
-[![skills.sh](https://skills.sh/b/jonymusky/waveshare-epaper-skill)](https://skills.sh/jonymusky/waveshare-epaper-skill)
+```bash
+npx skills add jonymusky/waveshare-epaper-skill
+```
 
 ## Why this exists
 
@@ -24,11 +27,12 @@ the firmware never ran.
 
 ## Install
 
-```
+```bash
 npx skills add jonymusky/waveshare-epaper-skill
 ```
 
-Or copy `skills/waveshare-esp32-s3-epaper-154/` into your agent's skills
+Works with Claude Code, Cursor, Codex, OpenCode and others. Or copy
+`skills/waveshare-esp32-s3-epaper-154/` straight into your agent's skills
 directory.
 
 ## What's covered
