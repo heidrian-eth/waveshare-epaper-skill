@@ -1,6 +1,6 @@
 ---
 name: waveshare-esp32-s3-epaper-154
-description: Build firmware for the Waveshare ESP32-S3-ePaper-1.54 board (200x200 B/W e-paper, ES8311 audio, SHTC3 sensor, PCF85063 RTC, microSD, battery). Use when working with this board or any ESP32-S3 e-paper board that shows a blank/frozen screen, boot-loops on flash size, stays silent through an ES8311 codec, or dies when USB is unplugged. Covers the verified pin map and four hardware traps that are absent from the vendor documentation.
+description: Build firmware for the Waveshare ESP32-S3-ePaper-1.54 and ESP32-S3-Touch-ePaper-1.54 boards (200x200 B/W e-paper, ES8311 audio, SHTC3 sensor, PCF85063 RTC, microSD, battery, FT6336 touch on the touch variant). Use when working with either board or any ESP32-S3 e-paper board that shows a blank/frozen screen, boot-loops on flash size or PSRAM init, stays silent through an ES8311 codec, or dies when USB is unplugged. Covers the verified pin map, four hardware traps absent from the vendor documentation, and how to tell the variants apart.
 license: MIT
 ---
 
@@ -13,6 +13,20 @@ microSD, RTC, temperature/humidity sensor and lithium battery management.
 hardware behaviours contradict what the documentation implies, and each one
 produces a symptom that points at the wrong subsystem. Together they cost
 several hours of debugging that this skill exists to save.
+
+## First, identify your unit
+
+Two boards ship under closely related names, and they report **identically** to
+`esptool` and `espefuse` — same chip, same 8 MB flash, same `PSRAM_VENDOR`.
+The check that separates them is an I2C scan: a device answering at `0x38` is
+an FT6336 touch controller.
+
+Run `scripts/identify.sh`, then follow `references/identify.md`. It routes you
+to the right notes and keeps you from applying a setting that was verified on
+the other board.
+
+Everything below applies to both units unless a page says otherwise.
+`references/variants.md` has the measurements where the two differ.
 
 ## The ground truth for pins
 
@@ -90,3 +104,6 @@ first.
 | `references/display.md` | Partial refresh, ghosting, text fitting, GxEPD2 setup |
 | `references/audio.md` | ES8311 bring-up, the DMA drain problem, tone generation |
 | `references/peripherals.md` | SHTC3, PCF85063 RTC, battery ADC, buttons |
+| `references/identify.md` | Which unit you have, and which settings follow from it |
+| `references/variants.md` | Where two measured units differ, and what was measured |
+| `references/touch.md` | FT6336 touch controller — touch variant only |

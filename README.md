@@ -12,6 +12,23 @@ is listed on [skills.sh](https://skills.sh/jonymusky/waveshare-epaper-skill).
 npx skills add jonymusky/waveshare-epaper-skill
 ```
 
+## Two units
+
+This skill now covers two boards that ship under closely related names:
+`ESP32-S3-ePaper-1.54` and `ESP32-S3-Touch-ePaper-1.54`. They carry the same
+ESP32-S3-PICO-1 silicon and report **identically** to `esptool` and `espefuse`,
+so capacity and vendor readings cannot tell them apart. An I2C scan can: a
+device at `0x38` is an FT6336 touch controller.
+
+```bash
+./scripts/identify.sh /dev/ttyACM0
+```
+
+Then follow `skills/waveshare-esp32-s3-epaper-154/references/identify.md`, which
+routes to the notes that match what you measured. Findings that differ between
+the two units are kept in `references/variants.md` with the measurements behind
+them, rather than folded into a single claim.
+
 ## Why this exists
 
 The board is capable and cheap, but four of its behaviours contradict what the
@@ -45,6 +62,10 @@ directory.
 | `references/display.md` | Partial refresh, ghosting, text fitting, GxEPD2 setup |
 | `references/audio.md` | ES8311 bring-up and the DMA drain problem |
 | `references/peripherals.md` | SHTC3, RTC, battery, buttons, GxEPD2, text rendering |
+| `references/identify.md` | Which unit you have, and what follows from it |
+| `references/variants.md` | Where the two measured units differ |
+| `references/touch.md` | FT6336 touch controller — touch variant only |
+| `scripts/identify.sh` | Host-side board fingerprint |
 
 ### The four traps, in one line each
 
@@ -76,11 +97,20 @@ Two things to check before buying. Make sure it is the black-and-white
 and this skill documents the B/W board. And note the **two hardware
 revisions**: V1 with 4 MB flash / 2 MB PSRAM, V2 with 8 MB / 8 MB.
 
+There is also a touch variant, `ESP32-S3-Touch-ePaper-1.54` (SKU 34211), which
+adds an FT6336 controller on the shared I2C bus. Everything in this skill
+applies to it except where `variants.md` says otherwise.
+
 ## Contributing
 
-Corrections and additions are welcome, especially for the RTC, the microphone,
-deep sleep and battery life, and the PSRAM warning that this skill flags but
-does not resolve.
+Corrections and additions are welcome, especially for the RTC, deep sleep and
+battery life, and for PSRAM on the original unit, which remains unresolved
+there.
+
+If your board's fingerprint does not match either unit in `variants.md`, that is
+worth reporting. Findings are recorded per unit with the measurements that
+produced them, so a third set of readings can be added without having to decide
+which of the existing ones is wrong.
 
 ## License
 

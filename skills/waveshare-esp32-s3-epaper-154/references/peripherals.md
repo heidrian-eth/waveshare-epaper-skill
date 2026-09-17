@@ -91,3 +91,12 @@ streaming audio to and from a file removes the need entirely, at far less cost
 than migrating a working Arduino project to ESP-IDF.
 
 If you do resolve it, a pull request would help the next person.
+
+**A second unit reached PSRAM in octal mode.** A board whose eFuses read
+identically to the dump above initialised 8 MB of PSRAM with
+`board_build.arduino.memory_type = qio_opi` on Arduino core 3.x. That does not
+establish what the unit above needs, but it does make the experiment worth one
+flash, and it suggests `FLASH_TYPE = 4 data lines` should not be read as
+evidence about the PSRAM line mode, since it describes the flash. The
+measurements and the reasoning are in `variants.md`; the procedure is in
+`identify.md` section 3.

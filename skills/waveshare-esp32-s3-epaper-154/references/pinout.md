@@ -24,6 +24,16 @@ variants.
 GxEPD2 class: `GxEPD2_154_D67`. Use `reset_duration = 20` in `display.init()`
 — a shorter pulse can leave the panel unreset.
 
+## Touch (FT6336) — touch variant only
+
+Present on `ESP32-S3-Touch-ePaper-1.54`. Confirm it answers at `0x38` before
+using these; see `identify.md`. Full notes in `touch.md`.
+
+| Signal | GPIO | Note |
+|---|---|---|
+| `TP_RST` | 7 | Reset, active low. Needs a 150 ms settle |
+| `TP_INT` | 21 | Interrupt, falls on touch |
+
 ## Audio (ES8311 codec, I²C address 0x18)
 
 | Signal | GPIO | Note |
@@ -46,6 +56,7 @@ amplifier. `pa_gain` is 6 dB, `use_mclk` is 1.
 | ES8311 codec | 0x18 |
 | PCF85063 RTC | 0x51 |
 | SHTC3 temp/humidity | 0x70 |
+| FT6336 touch | 0x38 (touch variant only) |
 
 SDA = GPIO47, SCL = GPIO48.
 
@@ -68,7 +79,8 @@ SDA = GPIO47, SCL = GPIO48.
 
 ## Silicon
 
-Confirmed with `esptool.py flash_id`:
+Confirmed with `esptool.py flash_id`. Note that this output is **the same on
+both units**, so it cannot be used to tell them apart — see `identify.md`:
 
 ```
 Features: WiFi, BLE, Embedded Flash 8MB (GD), Embedded PSRAM 8MB (AP_3v3)

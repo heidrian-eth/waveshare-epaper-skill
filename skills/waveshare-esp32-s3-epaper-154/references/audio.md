@@ -55,6 +55,11 @@ PlatformIO's `espressif32` platform ships Arduino-ESP32 2.x, which has only the
 legacy `driver/i2s.h`. The newer `driver/i2s_std.h` belongs to ESP-IDF 5 and
 will fail to compile. Check before writing against either API.
 
+On the pioarduino platform, which ships Arduino core 3.x on ESP-IDF 5.5,
+`driver/i2s_std.h` is available and the vendor's `esp_codec_dev` component
+compiles unmodified — so the register sequence below need not be ported by hand.
+See `variants.md` for the exact platform string.
+
 ## Verify the codec before blaming the I²S
 
 Read the registers back. If reads return sensible values matching what you
