@@ -1,6 +1,6 @@
 ---
 name: waveshare-esp32-s3-epaper-154
-description: Build firmware for the Waveshare ESP32-S3-ePaper-1.54 and ESP32-S3-Touch-ePaper-1.54 boards (200x200 B/W e-paper, ES8311 audio, SHTC3 sensor, PCF85063 RTC, microSD, battery, FT6336 touch on the touch variant). Use when working with either board or any ESP32-S3 e-paper board that shows a blank/frozen screen, boot-loops on flash size or PSRAM init, stays silent through an ES8311 codec, or dies when USB is unplugged. Covers the verified pin map, four hardware traps absent from the vendor documentation, and how to tell the variants apart.
+description: Build firmware for the Waveshare ESP32-S3-ePaper-1.54 and ESP32-S3-Touch-ePaper-1.54 boards (200x200 B/W e-paper, ES8311 audio, SHTC3 sensor, PCF85063 RTC, microSD, battery, FT6336 touch on the touch variant). Use when working with either board or any ESP32-S3 e-paper board that shows a blank/frozen screen, boot-loops on flash size or PSRAM init, stays silent through an ES8311 codec, chops or drops streamed audio, or dies when USB is unplugged. Covers the verified pin map, four hardware traps absent from the vendor documentation, and how to tell the variants apart.
 license: MIT
 ---
 
@@ -103,6 +103,7 @@ first.
 | `references/display.md` | Partial refresh, ghosting, text fitting, GxEPD2 setup |
 | `references/display.md` | Partial refresh, ghosting, text fitting, GxEPD2 setup |
 | `references/audio.md` | ES8311 bring-up, the DMA drain problem, tone generation |
+| `references/streaming-audio.md` | Continuous capture and playback, gain, speaker distortion |
 | `references/peripherals.md` | SHTC3, PCF85063 RTC, battery ADC, buttons |
 | `references/identify.md` | Which unit you have, and which settings follow from it |
 | `references/variants.md` | Where two measured units differ, and what was measured |

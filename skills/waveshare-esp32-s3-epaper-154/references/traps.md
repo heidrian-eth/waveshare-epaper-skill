@@ -143,3 +143,12 @@ plug in while still holding, release after two seconds.
 
 If the port still does not appear, the data lines are not connected: suspect a
 charge-only cable or a charge-only port on a hub before suspecting the board.
+
+On Linux the port belongs to the `dialout` group, and `chmod` on the device
+node lasts only until it is unplugged — which this board does across every
+reflash. A udev rule is the only thing that survives, and adding yourself to
+`dialout` does not help a shell that was already running:
+
+```
+SUBSYSTEM=="tty", ATTRS{idVendor}=="303a", MODE="0666"
+```

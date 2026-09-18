@@ -58,6 +58,25 @@ budget tracks actual partial updates.
 - **Multiple-choice options.** Redraw just the option area on each move.
 - **Counters and status values.** Only the number changed.
 
+## Measured refresh cost
+
+GxEPD2 reports its own timing, which is worth reading once rather than
+estimating:
+
+| Refresh | Cost |
+|---|---|
+| Partial window | 437 ms |
+| Full screen | 1815 ms |
+
+Partial refresh time is set by the panel's waveform, not by how much changed: a
+200x8 window and a full 200x200 differ by well under 100 ms. Computing a
+minimal dirty rectangle to push fewer pixels therefore buys nothing.
+
+Both numbers are long enough to matter to anything else the firmware is doing.
+A redraw on the same task as real-time audio will interrupt it audibly, and a
+redraw inside a touch handler outlasts a typical debounce window — see
+`touch.md`.
+
 ## Refresh sparingly
 
 E-paper degrades with refresh count, and it holds its image with zero power.

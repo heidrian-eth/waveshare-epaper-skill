@@ -73,6 +73,21 @@ The vendor example queues the pin number from the ISR and reads coordinates from
 a task, which is the right shape: the I2C read must not happen in interrupt
 context.
 
+## Debounce must outlast the redraw, not the finger
+
+If a touch triggers a partial refresh, the handler is busy for the length of
+that refresh — measured at 437 ms on this panel. A debounce window shorter than
+that lets an interrupt raised *during* the redraw through as a fresh touch, and
+a state machine that toggles on touch immediately toggles back.
+
+The symptom is specific and misleading: the action fires and undoes itself at
+once, looking like a state-machine bug rather than a timing one. It also only
+appears once a touch starts driving a redraw, so it arrives long after the
+touch handling itself was working.
+
+Set the debounce above the refresh cost, and clear the pending-touch flag after
+the slow work rather than before it, so anything raised meanwhile is discarded.
+
 ## Touch and e-paper are a poor match for drag
 
 A partial refresh takes around 0.3 s, so anything tracking a finger will lag
