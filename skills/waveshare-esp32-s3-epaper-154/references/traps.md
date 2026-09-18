@@ -71,7 +71,20 @@ near-identical across runs because nothing is actually being measured — but
 consistent timings are also what a healthy panel produces, so this signal
 cannot distinguish the two cases. Do not spend time on it.
 
-`AUDIO_PWR` (GPIO42) follows the same active-low convention.
+`AUDIO_PWR` (GPIO42) follows the same active-low convention, and it gates more
+than the codec: **the shared I2C bus goes with it.** Leave GPIO42 floating and
+the RTC reads back as absent, even though a bus scan in different firmware
+found it without trouble. The symptom points squarely at the RTC driver, which
+is where the time goes.
+
+Set all three rails together at boot and the problem never appears:
+
+```cpp
+pinMode(EPD_PWR, OUTPUT);  digitalWrite(EPD_PWR, LOW);   // active LOW
+pinMode(AUD_PWR, OUTPUT);  digitalWrite(AUD_PWR, LOW);   // active LOW
+pinMode(VBAT_PWR, OUTPUT); digitalWrite(VBAT_PWR, HIGH); // active HIGH
+delay(100);
+```
 
 ---
 
